@@ -1,1 +1,233 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Autocomplete with Minimum Sum</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .autocomplete-container {
+            position: relative;
+            width: 300px;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .autocomplete-items {
+            position: absolute;
+            border: 1px solid #ccc;
+            border-top: none;
+            z-index: 1000;
+            background-color: #fff;
+            width: 100%;
+            max-height: 200px;
+            overflow-y: auto;
+            border-radius: 0 0 4px 4px;
+        }
+
+        .autocomplete-item {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .autocomplete-item:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <select id="value-select">
+        <option value="190">SS</option>
+        <option value="130">S</option>
+        <option value="100">A</option>
+    </select>
+
+    <div class="autocomplete-container">
+        <label>
+            훈련장 난이도
+            <input type="text" id="autocomplete-input-1" placeholder="Input 1">
+            <div id="autocomplete-list-1" class="autocomplete-items"></div>
+        </label>
+    </div>
+
+    <div class="autocomplete-container">
+        <label>
+            몬스터 훈련석
+            <input type="text" id="autocomplete-input-2" placeholder="Input 2">
+            <div id="autocomplete-list-2" class="autocomplete-items"></div>
+        </label>
+    </div>
+
+    <div class="autocomplete-container">
+        <label>
+            파티원 훈련석
+            <input type="text" id="autocomplete-input-3" placeholder="Input 3">
+            <div id="autocomplete-list-3" class="autocomplete-items"></div>
+        </label>
+    </div>
+
+    <div class="autocomplete-container">
+        <label>
+            훈련장 인원
+            <input type="text" id="autocomplete-input-4" placeholder="Input 4">
+            <div id="autocomplete-list-4" class="autocomplete-items"></div>
+        </label>
+    </div>
+
+    <div class="autocomplete-container">
+        100. 130. 190
+        <input type="text" id="sum-result" placeholder="Sum Result" readonly>
+    </div>
+
+    <script>
+        // 각 입력 필드에 대한 데이터 배열
+        const data1 = [
+            { label: "없음", value: 0 },
+            { label: "중급", value: 50 },
+            { label: "상급", value: 70 },
+            { label: "하드일반", value: 100 },
+            { label: "하드중급", value: 130 }
+        ];
+
+        const data2 = [
+            { label: "없음", value: 0 },
+            { label: "생명력 150%", value: 10 },
+            { label: "대미지 150%", value: 10 },
+            { label: "보호 110%", value: 10 },
+            { label: "방어 110%", value: 10 },
+            { label: "지력 120%", value: 10 },
+            { label: "행운 120%", value: 10 },
+            { label: "방어 120%", value: 15 },
+            { label: "지력 150%", value: 15 },
+            { label: "행운 150%", value: 15 },
+            { label: "보호 120%", value: 20 },
+            { label: "등장수 150%", value: 20 },
+            { label: "지력 200%", value: 20 },
+            { label: "행운 200%", value: 20 },
+            { label: "방어 150%", value: 25 },
+            { label: "보호 150%", value: 30 },
+            { label: "대미지 300%", value: 30 },
+            { label: "생명력 300%", value: 30 },
+            { label: "등장수 200%", value: 40 },
+            { label: "생명력 500%", value: 45 },
+            { label: "대미지 500%", value: 45 }
+        ];
+
+        const data3 = [
+            { label: "없음", value: 0 },
+            { label: "생명력 회복속도 70%", value: 10 },
+            { label: "스테미나 회복속도 70%", value: 10 },
+            { label: "마나 회복속도 70%", value: 10 },
+            { label: "근접 스킬대미지 70%", value: 10 },
+            { label: "마법 시전속도 70%", value: 10 },
+            { label: "궁술 조준속도 70%", value: 10 },
+            { label: "크리티컬확률 70%", value: 10 },
+            { label: "생명력 70%", value: 10 },
+            { label: "생명력 회복속도 50%", value: 20 },
+            { label: "스테미나 회복속도 50%", value: 20 },
+            { label: "근접 스킬 대미지 50%", value: 20 },
+            { label: "마법 시전속도 50%", value: 20 },
+            { label: "궁술 조준속도 50%", value: 20 },
+            { label: "크리티컬확률 50%", value: 20 },
+            { label: "최대 대미지 70%", value: 20 },
+            { label: "생명력 50%", value: 30 },
+            { label: "최대 대미지 50%", value: 45 }
+        ];
+
+        const data4 = [
+            { label: "없음", value: 0 },
+            { label: "4인", value: 0 },
+            { label: "6인", value: 0 },
+            { label: "무제한", value: -30 }
+        ];
+
+        const inputs = [
+            document.getElementById('autocomplete-input-1'),
+            document.getElementById('autocomplete-input-2'),
+            document.getElementById('autocomplete-input-3'),
+            document.getElementById('autocomplete-input-4')
+        ];
+
+        const lists = [
+            document.getElementById('autocomplete-list-1'),
+            document.getElementById('autocomplete-list-2'),
+            document.getElementById('autocomplete-list-3'),
+            document.getElementById('autocomplete-list-4')
+        ];
+
+        const dataList = [data1, data2, data3, data4];
+        const sumResult = document.getElementById('sum-result');
+
+        function showAllItems(index) {
+            lists[index].innerHTML = '';
+            displayItems(dataList[index], index);
+        }
+
+        function displayItems(items, index) {
+            items.forEach(item => {
+                const div = document.createElement('div');
+                div.classList.add('autocomplete-item');
+                div.textContent = item.label;
+                div.dataset.value = item.value;
+                div.addEventListener('click', function() {
+                    inputs[index].value = item.label;
+                    inputs[index].dataset.value = item.value;
+                    lists[index].innerHTML = '';
+                    updateSumResult();
+                });
+                lists[index].appendChild(div);
+            });
+        }
+
+        function filterAndDisplay(index) {
+            const value = inputs[index].value.toLowerCase();
+            lists[index].innerHTML = '';
+
+            const filteredItems = dataList[index].filter(item => item.label.toLowerCase().includes(value));
+            displayItems(filteredItems, index);
+        }
+        function updateSumResult() {
+            const totalSum = inputs.reduce((sum, input) => sum + (parseInt(input.dataset.value) || 0), 0);
+            if (totalSum >= 190) {
+                sumResult.value = `SS (${totalSum})`;
+            }else if (totalSum >= 130) {
+                sumResult.value = `S ${totalSum}`;
+            }else if (totalSum >= 100) {
+                sumResult.value = `A ${totalSum}`;
+            }else {
+                sumResult.value = `B이하 ${totalSum}`;
+            }
+            
+        }
+
+        // 초기화 및 이벤트 리스너 추가
+        inputs.forEach((input, index) => {
+            input.addEventListener('focus', () => showAllItems(index));
+            input.addEventListener('input', () => filterAndDisplay(index));
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.autocomplete-container')) {
+                lists.forEach(list => list.innerHTML = '');
+            }
+        });
+    </script>
+</body>
+</html>
