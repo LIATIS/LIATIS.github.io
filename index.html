@@ -1,9 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
+<script>
+    function setImagePreference(loadImage) {
+        localStorage.setItem('loadImage', loadImage);
+        window.location.href = 'index.html';
+    }
+</script>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Navigation</title>
+    <title>I GO Catastrophic</title>
     <style>
         body {
             display: flex;
@@ -23,7 +29,7 @@
             padding: 15px;
             margin: 10px auto;
             text-align: center;
-            background-color: #007BFF;
+            background-color: white;
             color: white;
             text-decoration: none;
             border-radius: 8px;
@@ -31,16 +37,16 @@
             transition: background-color 0.3s;
         }
         .button:hover {
-            background-color: #0056b3;
+            background-color: white;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Project Navigation</h1>
-        <a href="page1.html" class="button">Go to Page 1</a>
-        <a href="page2.html" class="button">Go to Page 2</a>
-        <a href="page3.html" class="button">Go to Page 3</a>
+        <h1>마비노기 아이고망햇내 가이드</h1>
+        <a href="src/AlbanKnights.html" class="button">알반기사단 등급계산</a>
+        <a href="src/BasCrom.html" class="button">크롬 바스</a>
+        <a href="src/Equipment.html" class="button">장비</a>
     </div>
 </body>
 </html>
