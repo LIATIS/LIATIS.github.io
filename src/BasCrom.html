@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <div class="post_content">
+            <div>
+                <h1>크롬바스 암호 계산기</h1>
+            </div>
+            <div style="padding: 0 10px;">
+            </div>
+            <div>
+                <div class="bank-title">
+                    <h3>획득 암호</h3>
+                </div>
+                <div id="inputContainer">
+                    <h5>숫자 암호</h5>
+                    <div> 첫번째 숫자 암호 1) <input type="number" value="0"></div>
+                    <div> 두번째 숫자 암호 2) <input type="number" value="0"></div>
+                    <div> 세번째 숫자 암호 3) <input type="number" value="0"></div>
+                </div>
+                <div>
+                    <h5>문자 암호</h5>
+                    <div> <input type="radio" name="cal" value="0" checked="">+ +</div>
+                    <div> <input type="radio" name="cal" value="1">+ -</div>
+                    <div> <input type="radio" name="cal" value="2">- +</div>
+                    <div> <input type="radio" name="cal" value="3">- -</div>
+                    <div> <input type="radio" name="cal" value="4">* *</div>
+                    <div> <input type="radio" name="cal" value="5">* +</div>
+                    <div> <input type="radio" name="cal" value="6">* -</div>
+                </div>
+            </div>
+            <div class="bank-row">
+                <div class="bank-title">
+                    <h4>결과 (클릭시 바로 복사됩니다)</h4>
+                </div>
+                <div id="outputContainer">
+                    <input type="text" readonly="">
+                    <input type="text" readonly="">
+                    <input type="text" readonly="">
+                    <input type="text" readonly="">
+                    <input type="text" readonly="">
+                </div>
+            </div>
+        </div>
+    </body>
+    <script>
+
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const inputContainer = document.getElementById("inputContainer");
+            const inputElements = inputContainer.querySelectorAll("input");
+            const radioButtons = document.querySelectorAll('input[name="cal"]');
+            const outputElements = document.querySelectorAll("#outputContainer input");
+            const textArray = ["바스", "벨테인", "루나사", "삼하인", "임볼릭"];
+            
+            function calNumber(a, b, c, d) {
+                switch (d) {
+                    case '0':
+                        return a + b + c;
+                    case '1':
+                        return a + b - c;
+                    case '2':
+                        return a - b + c;
+                    case '3':
+                        return a - b - c;
+                    case '4':
+                        return a * b * c;
+                    case '5':
+                        return a * b + c;
+                    case '6':
+                        return a * b - c;
+                    default:
+                        return 0
+                }
+            }
+
+            function changeResult() {
+                const selectedRadio = document.querySelector('input[name="cal"]:checked');
+                calresult = calNumber(Number(inputElements[0].value), 
+                                        Number(inputElements[1].value), 
+                                        Number(inputElements[2].value), 
+                                        selectedRadio.value);
+                for (i=0; i<outputElements.length; i++) {
+                    outputElements[i].value = calresult + textArray[i];
+                }
+            }
+
+            inputElements.forEach(function(inputElement) {
+                inputElement.addEventListener("input", changeResult);
+            });
+
+            radioButtons.forEach(function(radio) {
+                radio.addEventListener("change", changeResult);
+            });
+
+            outputElements.forEach(function(outputElement) {
+                outputElement.addEventListener("click", function() {
+                    const textToCopy = outputElement.value;
+                    navigator.clipboard.writeText(textToCopy).then(function() {
+                        console.log(outputElement.value);
+                    }).catch(function(error) {
+                        console.log(error);
+                    });
+                });
+            });
+
+        });
+    </script>
+</html>
