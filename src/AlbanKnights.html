@@ -16,10 +16,16 @@
             padding: 20px;
         }
 
+        .flex-container {
+            display: flex;
+            flex-direction: row; /* 가로로 정렬 */
+            gap: 20px; /* 각 input 사이의 간격 */
+            margin-bottom: 20px;
+        }
+
         .autocomplete-container {
             position: relative;
-            width: 300px;
-            margin-bottom: 20px;
+            width: 150px; /* 각 입력 필드의 너비 설정 */
         }
 
         input[type="text"] {
@@ -36,7 +42,7 @@
             border-top: none;
             z-index: 1000;
             background-color: #fff;
-            width: 100%;
+            width: 100%; /* 부모의 너비에 맞춤 */
             max-height: 200px;
             overflow-y: auto;
             border-radius: 0 0 4px 4px;
@@ -53,47 +59,30 @@
     </style>
 </head>
 <body>
-    <select id="value-select">
-        <option value="190">SS</option>
-        <option value="130">S</option>
-        <option value="100">A</option>
-    </select>
-
     <div class="autocomplete-container">
-        <label>
-            훈련장 난이도
-            <input type="text" id="autocomplete-input-1" placeholder="Input 1">
-            <div id="autocomplete-list-1" class="autocomplete-items"></div>
-        </label>
-    </div>
-
-    <div class="autocomplete-container">
-        <label>
-            몬스터 훈련석
-            <input type="text" id="autocomplete-input-2" placeholder="Input 2">
-            <div id="autocomplete-list-2" class="autocomplete-items"></div>
-        </label>
-    </div>
-
-    <div class="autocomplete-container">
-        <label>
-            파티원 훈련석
-            <input type="text" id="autocomplete-input-3" placeholder="Input 3">
-            <div id="autocomplete-list-3" class="autocomplete-items"></div>
-        </label>
-    </div>
-
-    <div class="autocomplete-container">
-        <label>
-            훈련장 인원
-            <input type="text" id="autocomplete-input-4" placeholder="Input 4">
-            <div id="autocomplete-list-4" class="autocomplete-items"></div>
-        </label>
-    </div>
-
-    <div class="autocomplete-container">
-        100. 130. 190
+        <div>A : 100 <BR> S : 130 <BR> SS : 190 </div>
         <input type="text" id="sum-result" placeholder="Sum Result" readonly>
+    </div>
+    <div class="flex-container">
+        <div class="autocomplete-container">
+            <input type="text" id="autocomplete-input-1" placeholder="훈련장 난이도">
+            <div id="autocomplete-list-1" class="autocomplete-items"></div>
+        </div>
+
+        <div class="autocomplete-container">
+            <input type="text" id="autocomplete-input-2" placeholder="몬스터 훈련석">
+            <div id="autocomplete-list-2" class="autocomplete-items"></div>
+        </div>
+
+        <div class="autocomplete-container">
+            <input type="text" id="autocomplete-input-3" placeholder="파티원 훈련석">
+            <div id="autocomplete-list-3" class="autocomplete-items"></div>
+        </div>
+
+        <div class="autocomplete-container">            
+            <input type="text" id="autocomplete-input-4" placeholder="훈련장 인원">
+            <div id="autocomplete-list-4" class="autocomplete-items"></div>
+        </div>
     </div>
 
     <script>
@@ -203,16 +192,17 @@
             const filteredItems = dataList[index].filter(item => item.label.toLowerCase().includes(value));
             displayItems(filteredItems, index);
         }
+
         function updateSumResult() {
             const totalSum = inputs.reduce((sum, input) => sum + (parseInt(input.dataset.value) || 0), 0);
             if (totalSum >= 190) {
                 sumResult.value = `SS (${totalSum})`;
             }else if (totalSum >= 130) {
-                sumResult.value = `S ${totalSum}`;
+                sumResult.value = `S (${totalSum})`;
             }else if (totalSum >= 100) {
-                sumResult.value = `A ${totalSum}`;
+                sumResult.value = `A (${totalSum})`;
             }else {
-                sumResult.value = `B이하 ${totalSum}`;
+                sumResult.value = `B이하 (${totalSum})`;
             }
             
         }
