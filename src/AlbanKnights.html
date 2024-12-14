@@ -208,10 +208,7 @@
         }
 
         // 초기화 및 이벤트 리스너 추가
-        inputs.forEach((input, index) => {
-            input.addEventListener('focus', () => showAllItems(index));
-            input.addEventListener('input', () => filterAndDisplay(index));
-        });
+        l
 
         document.addEventListener('click', function(e) {
             if (!e.target.closest('.autocomplete-container')) {

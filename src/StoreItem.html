@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>장비검색</title>
+    <title>상점보기</title>
 </head>
 <body>
     검색 apikey
@@ -13,13 +13,11 @@
     <button id="" onclick="fn_deleteApiKey()">삭제</button>
     
     검색 카테고리
-    <select id="itemCategory"></select>
-    <input id="itemName">
+    <select id="npcName"></select>
+    <select id="serverName"></select>
+    <input id="channel">
     <button id="" onclick="fn_callTrade()">검색</button>
 
-    장비 견적
-
-    양식
 </body>
 <script>
     baseAddress = "https://open.api.nexon.com";
@@ -55,16 +53,16 @@
 
     function fn_callTrade() {
         let apiKey = document.getElementById('apiKey').value;
-        let itemCategory = document.getElementById('itemCategory').value;
-        let itemName = document.getElementById('itemName').value;
+        let npcName = document.getElementById('npcName').value;
+        let serverName = document.getElementById('serverName').value;
+        let channel = document.getElementById('channel').value;
         
         data = {};
-        if (itemCategory !== '')
-            data.auction_item_category = itemCategory
-        if (itemName !== '')
-            data.item_name = itemName;
+        data.npc_name = npcName;
+        data.server_name = serverName;
+        data.channel = channel;
         let queryString = new URLSearchParams(data).toString();
-        let address = baseAddress + "/mabinogi/v1/auction/list" + "?" + queryString;
+        let address = baseAddress + "/mabinogi/v1/npcshop/list" + "?" + queryString;
 
         fetch(address, {
             method: 'GET',
@@ -83,9 +81,19 @@
     }
 
     document.addEventListener("DOMContentLoaded", function(){
-        categoryList = ["검", "경갑옷", "너클", "도끼", "둔기", "듀얼건", "랜스", "마도서", "모자/가발", "방패", "석궁", "수리검", "스태프", "신발", "실린더", "아틀라틀", "악기", "액세서리", "양손 장비", "에코스톤", "오브", "원드", "장갑", "중갑옷", "천옷", "체인 블레이드", "토템", "한손 장비", "핸들", "활"]
-        const select = document.getElementById('itemCategory');
-        categoryList.forEach(item => {
+        categoryList1 = ["델", "델렌", "상인 라누", "상인 피루", "모락", "상인 아루", "리나", "상인 누누", "상인 메루", "켄", "귀넥", "얼리", "데위",
+                         "테일로", "상인 세누", "상인 베루", "상인 에루", "상인 네루", "카디", "인장 상인", "피오나트"]
+        const select1 = document.getElementById('npcName');
+        categoryList1.forEach(item => {
+            let newOption = document.createElement('option');
+            newOption.value = item;
+            newOption.text  = item;
+            select.appendChild(newOption);
+        });
+
+        categoryList2 = ["류트", "하프", "울프", "만돌린"]
+        const select2 = document.getElementById('serverName');
+        categoryList2.forEach(item => {
             let newOption = document.createElement('option');
             newOption.value = item;
             newOption.text  = item;
